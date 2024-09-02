@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h1>login.html</h1>
+	<div>
+		email : <input type="text" name="email" id="email">
+	</div>
+	<div>
+		password : <input type="password" name="password" id="password">
+	</div>
+	<button id="btnLogin">로그인</button>
+	
+	<script>
+		window.onload = function() {
+			document.querySelector("#btnLogin").onclick = login;
+		}
+		
+		async function login() {
+			// parameter, value
+			let email = document.querySelector("#email").value;
+			let password = document.querySelector("#password").value;
+			
+			console.log(email, password);
+			
+			let urlParams = new URLSearchParams({
+//				email : email,
+//				password : password
+				// shorthand property
+				email, password
+			});
+			
+			// url
+			let url = "/users/login";
+			
+			// post, parameter
+			let fetchOptions = {
+				method : "POST",
+				body : urlParams
+			}
+			
+			let response = await fetch(url, fetchOptions);
+			let data = await response.json()
+			
+			// console.log(data);
+			
+			if( data.result == "success" ) {
+				// 로그인 성공일 경우
+				console.log(data.userDto);
+				
+				// 로그인 성공한 사용자의 정보를 저장하는 방법
+				// #1 개별 항목을 sessionStorage에 관리
+				// sessionStorage.setItem("name", data.userDto.name);
+				// sessionStorage.setItem("email", data.userDto.email);
+				
+				// #2 userDto 객체를 json 문자열로 변환해서 sessionStorage에 저장하고
+				// 필요할 때 다시 객체로 변환해서 사용
+				// javascript object -> json 문자열
+				let userDtoJson = JSON.stringify(data.userDto);
+				sessionStorage.setItem("userDto", userDtoJson);
+				
+				// index.html로 이동
+				window.location.href = "/index.html";
+				
+			} else if ( data.result == "fail" ) {
+				alert("아이디 또는 비밀번호가 올바르지 않습니다.");
+			}
+			
+		}
+	</script>
+</body>
+</html>

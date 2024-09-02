@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+	<h1>addressInsert.html</h1>
+	<h4>회원 주소 추가</h4>
+	
+	<table>
+		<thead>
+			<tr><th>zipCode</th><th>addr1</th><th>addr2</th></tr>
+		</thead>
+		<tbody id="addressTbody">
+		
+		</tbody>
+	</table>
+	
+	<hr>
+	<div>
+		zipCode : <input type="text" name="zipCode" id="zipCode">
+	</div>
+	<div>
+		addr1 : <input type="text" name="addr1" id="addr1">
+	</div>
+	<div>
+		addr2 : <input type="text" name="addr2" id="addr2">
+	</div>
+	
+	<button id="btnUpdate">주소 추가</button>
+	
+	<br><br>
+	<a href="/index.html">메뉴</a>
+
+	<script>
+	window.onload = function() {
+		userDetailList();
+		
+		document.querySelector("#btnUpdate").onclick = addressInsert;
+	}
+	
+	async function userDetailList() {
+		// url
+		let url = "/users/listUserAddress";
+		
+		let response = await fetch(url);
+		let data = await response.json();
+		
+		console.log(data);
+		
+		if( data.result == "success" ) {
+			// 회원가입 성공일 경우
+			console.log(data.userDto);
+			let { userDto } = data;  // destruction (구조분해 할당)
+			
+			let addressHtml = ``;
+			userDto.addresses.forEach(address => {
+				addressHtml += `<tr><td>${address.zipCode}</td><td>${address.addr1}</td><td>${address.addr2}</td></tr>`
+			});
+			
+			document.querySelector("#addressTbody").innerHTML = addressHtml;
+		} else if ( data.result == "fail" ) {
+			alert("상세 조회 과정에서 오류가 발생하였습니다.");
+		}
+		
+	}
+	
+	async function addressInsert() {
+		// parameter, value
+		let zipCode = document.getElementById("zipCode").value
+		let addr1 = document.getElementById("addr1").value
+		let addr2 = document.getElementById("addr2").value
+		
+		console.log(zipCode, addr1, addr2);
+		
+		let urlParams = new URLSearchParams({
+			zipCode, addr1, addr2
+		});
+		
+		// url
+		let url = "/users/addAddress";
+		
+		// post, parameter
+		let fetchOptions = {
+			method : "POST",
+			body : urlParams
+		}
+		
+		let response = await fetch(url, fetchOptions);
+		let data = await response.json();
+		
+		console.log(data);
+		
+		if( data.result == "success" ) {
+			// 주소 등록 성공일 경우
+			alert("주소 등록 완료 되었습니다.")
+			let { userDto } = data;  // destruction (구조분해 할당)
+			
+			let addressHtml = ``;
+			userDto.addresses.forEach(address => {
+				addressHtml += `<tr><td>${address.zipCode}</td><td>${address.addr1}</td><td>${address.addr2}</td></tr>`
+			});
+			
+			document.querySelector("#addressTbody").innerHTML = addressHtml;
+		} else if ( data.result == "fail" ) {
+			alert("주소 등록 과정에서 오류가 발생하였습니다.");
+		}
+		
+	}
+	</script>
+
+</body>
+</html>

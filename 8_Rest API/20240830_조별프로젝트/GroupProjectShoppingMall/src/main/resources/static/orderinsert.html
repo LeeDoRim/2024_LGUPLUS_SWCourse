@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	
+	<h1>orderinsert.html</h1>
+	<!-- <div>
+		userId : <input type="text" name="userId" id="userId">
+	</div> -->
+	<div>
+		productId : <input type="text" name="productId" id="productId">
+	</div>
+	<div>
+		orderQuantity : <input type="text" name="orderQuantity" id="orderQuantity">
+	</div>
+	<button id="btnOrder">주문</button>
+	<br>
+	<a href="/index.html">메뉴</a>
+	
+	<script>
+		window.onload = function() {
+			document.querySelector("#btnOrder").onclick = order;
+		}
+		
+		async function order() {
+			// parameter, value
+			// let userId = document.querySelector("#userId").value;
+			let productId = document.querySelector("#productId").value;
+			let orderQuantity = document.querySelector("#orderQuantity").value;
+			
+			console.log(productId, orderQuantity);
+			
+			let urlParams = new URLSearchParams({
+				productId, orderQuantity
+			});
+			
+			// url
+			let url = "/orders/insertorders";
+			
+			// post, parameter
+			let fetchOptions = {
+				method : "POST",
+				body : urlParams
+			}
+			
+			let response = await fetch(url, fetchOptions);
+			let data = await response.json();
+			
+			// console.log(data);
+			
+			if( data.result == "success" ) {
+				// 회원가입 성공일 경우
+				//console.log(data.userDto);
+				alert("주문 완료 되었습니다.")
+			} else if ( data.result == "fail" ) {
+				alert("주문 과정에서 오류가 발생하였습니다.");
+			}
+			
+		}
+	</script>
+	
+</body>
+</html>

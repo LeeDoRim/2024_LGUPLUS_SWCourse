@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	
+	<h1>userUpdate.html</h1>
+	<h4>회원 정보 수정</h4>
+	
+	<div>
+		name : <input type="text" name="name" id="name">
+	</div>
+	<div>
+		email : <input type="text" name="email" id="email">
+	</div>
+	<div>
+		password : <input type="text" name="password" id="password">
+	</div>
+	
+	<!-- <button id="btnUpdate">수정</button> -->
+	
+	<br><br>
+	<a href="/addressInsert.html">주소 수정</a>
+	<a href="/phoneinsert.html">연락처 수정</a>
+	
+	<br><br>
+	<a href="/index.html">메뉴</a>
+	
+	<script>
+	window.onload = function() {
+		userDetailList();
+		
+		document.querySelector("#btnUpdate").onclick = update;
+	}
+	
+	async function userDetailList() {
+		// url
+		let url = "/users/userlist";
+		
+		let response = await fetch(url);
+		let data = await response.json();
+		
+		console.log(data);
+		
+		if( data.result == "success" ) {
+			// 회원가입 성공일 경우
+			// console.log(data.userDto);
+			let { userDto } = data;  // destruction (구조분해 할당)
+			console.log(userDto.name);
+			
+			document.getElementById("name").value = userDto.name;
+			document.getElementById("email").value = userDto.email;
+			document.getElementById("password").value = userDto.password;
+			
+			
+		} else if ( data.result == "fail" ) {
+			alert("회원 조회 조회 과정에서 오류가 발생하였습니다.");
+		}
+		
+	}
+	
+	async function update() {
+		// parameter, value
+		// let userId = document.querySelector("#userId").value;
+		let name = document.getElementById("name").value
+		let email = document.getElementById("email").value
+		let password = document.getElementById("password").value
+		
+		console.log(name, email, password);
+		
+		let urlParams = new URLSearchParams({
+			name, email, password
+		});
+		
+		// url
+		let url = "/users/userupdate";
+		
+		// post, parameter
+		let fetchOptions = {
+			method : "POST",
+			body : urlParams
+		}
+		
+		let response = await fetch(url, fetchOptions);
+		let data = await response.json();
+		
+		console.log(data);
+		
+		if( data.result == "success" ) {
+			// 회원가입 성공일 경우
+			//console.log(data.userDto);
+			alert("수정 완료 되었습니다.")
+		} else if ( data.result == "fail" ) {
+			alert("수정 과정에서 오류가 발생하였습니다.");
+		}
+		
+	}
+	</script>
+	
+</body>
+</html>

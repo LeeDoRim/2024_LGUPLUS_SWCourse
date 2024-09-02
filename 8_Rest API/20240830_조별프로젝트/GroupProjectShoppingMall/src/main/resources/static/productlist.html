@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h1>productList.html</h1>
+	<h4>제품 목록</h4>
+	<table>
+		<thead>
+			<tr><th>id</th><th>name</th><th>price</th><th>quantity</th><th>country</th></tr>
+		</thead>
+		<tbody id="productTbody">
+		
+		</tbody>
+	</table>
+	
+	<br>
+	<a href="/index.html">메뉴</a>
+	
+	<script>
+	window.onload = function() {
+		productList();
+	}
+	
+	async function productList() {
+		// url
+		let url = "/product/list";
+		
+		let response = await fetch(url);
+		let data = await response.json();
+		
+		// console.log(data);
+		
+		if( data.result == "success" ) {
+			// 회원가입 성공일 경우
+			console.log(data.userDto);
+			let { productList } = data;  // destruction (구조분해 할당)
+			
+			let productHtml = ``;
+			productList.forEach( product => {
+				productHtml += `<tr><td>${product.id}</td><td>${product.name}</td><td>${product.price}</td><td>${product.quantity}</td><td>${product.country}</td></tr>`
+			});
+			
+			document.querySelector("#productTbody").innerHTML = productHtml;
+		} else if ( data.result == "fail" ) {
+			alert("제품 조회 조회 과정에서 오류가 발생하였습니다.");
+		}
+		
+	}
+	</script>
+</body>
+</html>
