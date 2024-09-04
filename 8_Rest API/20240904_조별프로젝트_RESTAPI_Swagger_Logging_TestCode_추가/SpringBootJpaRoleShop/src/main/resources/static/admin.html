@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>admin.html</title>
+</head>
+<body>
+<hr>
+<div id="name"></div>
+<div id="roles"></div>
+
+<!-- Added buttons for navigation -->
+<button id="btnOrderList">Order List</button>
+<button id="btnUserList">User List</button>
+<button id="btnProductList">Product List</button>
+
+<script>
+    window.onload = function () {
+        let userDto = JSON.parse(sessionStorage.getItem("userDto"));
+        if (userDto && userDto.name) {
+            document.querySelector("#name").innerHTML = userDto.name;
+        }
+
+        document.querySelector("#btnOrderList").onclick = () => window.location.href = 'admin_orderList.html';
+        document.querySelector("#btnUserList").onclick = () => window.location.href = 'admin_userList.html';
+        document.querySelector("#btnProductList").onclick = () => window.location.href = 'admin_productList.html';
+    }
+
+
+</script>
+</body>
+</html>

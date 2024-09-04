@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Product List</title>
+</head>
+<body>
+<h1>Product List</h1>
+<div id="productList"></div>
+
+<button onclick="window.location.href='admin_insertProduct.html'">Add New Product</button>
+<button onclick="window.location.href='index.html'">Back to Home</button>
+
+<script>
+  async function fetchProducts() {
+    const response = await fetch('/admin/products', { method: 'GET' });
+    if (response.ok) {
+      const productResultDto = await response.json();
+      if (productResultDto.result === 'success') {
+        displayProducts(productResultDto.productList);
+      } else {
+        document.getElementById('productList').innerHTML = 'Failed to load products';
+      }
+    } else {
+      document.getElementById('productList').innerHTML = 'Error: ' + response.status + ' ' + response.statusText;
+    }
+  }
+
+  function displayProducts(products) {
+    const productList = document.getElementById('productList');
+    productList.innerHTML = '';
+
+    products.forEach(product => {
+      const productElement = document.createElement('div');
+      productElement.textContent = `ID: ${product.id}, Name: ${product.name}, Price: ${product.price}`;
+      productElement.style.cursor = 'pointer';
+      productElement.addEventListener('click', () => editProduct(product));
+      productList.appendChild(productElement);
+    });
+  }
+
+  function editProduct(product) {
+    window.location.href = `admin_editProduct.html?id=${product.id}&name=${product.name}&price=${product.price}&quantity=${product.quantity}&country=${product.country}`;
+  }
+
+  window.onload = fetchProducts;
+</script>
+</body>
+</html>

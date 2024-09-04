@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>회원가입</h1>
+    <div>
+        name : <input type="text" name="name" id="name">
+    </div>
+    <div>
+        email : <input type="text" name="email" id="email" value="">
+        <button id="btnValidateEmail">중복 체크</button>
+    </div>
+    <div>
+        password : <input type="password" name="password" id="password" value="">
+    </div>
+    <div>
+        phone : <input type="text" name="phone" id="phone">
+    </div>
+    <h3>주소</h3>
+    <div>
+        우편번호 : <input type="text" name="zip_code" id="zip_code">
+    </div>
+    <div>
+        주소 : <input type="text" name="addr1" id="addr1">
+    </div>
+    <div>
+        상세주소 : <input type="text" name="addr2" id="addr2">
+    </div>
+    <button id="btnRegister">회원가입</button>
+
+    <script>
+        window.onload = function (){
+            document.querySelector("#btnRegister").onclick = register;
+            document.querySelector("#btnValidateEmail").onclick = validateEmail;
+        }
+
+        async function register() {
+            let name = document.querySelector("#name").value;
+            let email = document.querySelector("#email").value;
+            let password = document.querySelector("#password").value;
+            let phone = document.querySelector("#phone").value;
+            let zipCode = document.querySelector("#zip_code").value;
+            let addr1 = document.querySelector("#addr1").value;
+            let addr2 = document.querySelector("#addr2").value;
+
+            let urlParams = new URLSearchParams({
+                name, email, password, phone, zipCode, addr1, addr2
+            });
+
+            let url = "/users/register";
+
+            let fetchOptions = {
+                method: "POST",
+                body: urlParams
+            };
+
+            let response = await fetch(url, fetchOptions); // json
+            let data = await response.json(); // js object
+            console.log(data);
+
+            if (data.result == "success") {
+                alert("회원가입에 성공했습니다. 로그인 화면으로 이동합니다.")
+                window.location.href = "login.html";
+            } else if (data.result == "fail") {
+                alert("회원가입 과정에서 오류가 발생했습니다.");
+            }
+        }
+
+        async function validateEmail() {
+            let email = document.querySelector("#email").value;
+
+            let urlParams = new URLSearchParams({
+                email
+            });
+
+            let url = "/users/register/validate";
+
+            let fetchOptions = {
+                method: "POST",
+                body: urlParams
+            };
+
+            let response = await fetch(url, fetchOptions); // json
+            let data = await response.json(); // js object
+            console.log(data);
+
+            if (data.result == "success") {
+                alert("사용 가능한 이메일입니다.")
+            } else if (data.result == "fail") {
+                alert("이미 가입된 이메일입니다. 다른 이메일을 입력해주세요.");
+            }
+        }
+    </script>
+</body>
+</html>

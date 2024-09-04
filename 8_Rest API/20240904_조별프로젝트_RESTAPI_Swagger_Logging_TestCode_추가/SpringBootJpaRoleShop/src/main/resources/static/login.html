@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>로그인</h1>
+    <div>
+        email : <input type="text" name="email" id="email" value="user4@mycom.com">
+    </div>
+    <div>
+        password : <input type="password" name="password" id="password" value="password4">
+    </div>
+    <button id="btnLogin">로그인</button>
+
+    <script>
+        window.onload = function (){
+            document.querySelector("#btnLogin").onclick = login;
+        }
+
+        async function login() {
+            let email = document.querySelector("#email").value;
+            let password = document.querySelector("#password").value;
+
+            let urlParams = new URLSearchParams({
+                email, password
+            });
+
+            let url = "/users/login";
+
+            let fetchOptions = {
+                method: "POST",
+                body: urlParams
+            };
+
+            let response = await fetch(url, fetchOptions); // json
+            let data = await response.json(); // js object
+            console.log(data);
+
+            if (data.result == "success") {
+                // console.log(Object.values(data.userDto.roles)); //  role 확인
+
+                let userDtoJson = JSON.stringify(data.userDto);
+                sessionStorage.setItem("userDto", userDtoJson);
+                window.location.href = "/index.html";
+            } else if (data.result == "fail") {
+                alert("아이디 또는 비밀번호가 올바르지 않습니다. 다시 입력해주세요.");
+            }
+        }
+    </script>
+
+</body>
+</html>

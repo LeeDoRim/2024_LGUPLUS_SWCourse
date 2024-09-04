@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order List</title>
+</head>
+<body>
+<h1>Order List</h1>
+<div id="orderList"></div>
+<button onclick="goBack()">Back to Index</button>
+
+<script>
+    async function fetchOrders() {
+        const response = await fetch('/admin/orders');
+        console.log(response);
+        if (response.ok) {
+            const ordersResultDto = await response.json();
+            if (ordersResultDto.result === 'success') {
+                displayOrders(ordersResultDto.listOrders);
+            } else {
+                document.getElementById('orderList').innerHTML = 'Failed to load orders';
+            }
+        } else {
+            document.getElementById('orderList').innerHTML = 'Error: ' + response.status + ' ' + response.statusText;
+        }
+    }
+
+    function displayOrders(orders) {
+        const orderList = document.getElementById('orderList');
+        orderList.innerHTML = '';
+
+        orders.forEach(order => {
+            const orderElement = document.createElement('div');
+            orderElement.textContent = `Order ID: ${order.id}, Quantity: ${order.orderQuantity}, Date: ${order.orderDate}`;
+            orderList.appendChild(orderElement);
+        });
+    }
+
+    function goBack() {
+        window.location.href = 'index.html';
+    }
+
+    window.onload = fetchOrders;
+</script>
+</body>
+</html>

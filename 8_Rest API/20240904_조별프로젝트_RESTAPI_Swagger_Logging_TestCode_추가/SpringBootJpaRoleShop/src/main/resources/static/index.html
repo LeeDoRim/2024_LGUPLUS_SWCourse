@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>Home</h1>
+    <hr>
+    <div id="name"></div>
+    <div id="role"></div>
+    <button id="btnLogout">Logout</button>
+    <hr>
+    <a href="/login.html">로그인</a>
+    <a href="/register.html">회원가입</a>
+    <hr>
+    <a href="/productlist.html">회원 상품 조회</a> <br>
+    <a href="/orderinsert.html">회원 상품 주문</a><br>
+    <a href="/userupdate.html">회원 정보 수정</a><br>
+    <hr>
+    <a href="/test.html">로그인한 사용자만 접근 가능한 페이지</a>
+    <hr>
+    <a href="/admin.html">관리자 페이지</a>
+
+    <script>
+        window.onload = function () {
+
+            let userDto = JSON.parse(sessionStorage.getItem("userDto")); // json string -> js object
+            if (userDto) {
+                document.querySelector("#name").innerHTML = userDto.name + " 회원님, 환영합니다. 😊";
+
+                let roleHtml = "등급: ";
+
+                Object.values(userDto.roles).forEach(role => roleHtml += role + ", ");
+                document.querySelector("#role").innerHTML = roleHtml;
+            }
+
+            document.querySelector("#btnLogout").onclick = logout;
+        }
+
+        async function logout() {
+            let url = "/users/logout";
+
+            let response = await fetch(url); // json
+            let data = await response.json(); // js object
+
+            if (data.result == "success") {
+                sessionStorage.removeItem("userDto");
+                document.querySelector("#name").innerHTML = "";
+                document.querySelector("#role").innerHTML = "";
+                alert("로그아웃에 성공했습니다.");
+            } else if (data.result == "fail") {
+                alert("로그아웃 과정에서 오류가 발생했습니다.");
+            }
+        }
+
+    </script>
+</body>
+</html>

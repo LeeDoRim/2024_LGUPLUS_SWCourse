@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+	<h1>phoneInsert.html</h1>
+	<h4>회원 연락처 추가</h4>
+	
+	<table>
+		<thead>
+			<tr><th>phone</th></tr>
+		</thead>
+		<tbody id="phoneTbody">
+		
+		</tbody>
+	</table>
+	
+	<hr>
+	<div>
+		phone : <input type="text" name="phone" id="phone">
+	</div>
+	
+	<button id="btnInsert">연락처 추가</button>
+	
+	<br><br>
+	<a href="/index.html">메뉴</a>
+
+	<script>
+	window.onload = function() {
+		userDetailList();
+		
+		document.querySelector("#btnInsert").onclick = phoneInsert;
+	}
+	
+	async function userDetailList() {
+		// url
+		let url = "/users/phones";
+		
+		let response = await fetch(url);
+		let data = await response.json();
+		
+		console.log(data);
+		
+		if( data.result == "success" ) {
+			// 회원가입 성공일 경우
+			console.log(data.userDto);
+			let { userDto } = data;  // destruction (구조분해 할당)
+			
+			let phoneHtml = ``;
+			userDto.phones.forEach( phone => {
+				phoneHtml += `<tr><td>${phone.phone}</td></tr>`
+			});
+			
+			document.querySelector("#phoneTbody").innerHTML = phoneHtml;
+		} else if ( data.result == "fail" ) {
+			alert("연락처 조회 과정에서 오류가 발생하였습니다.");
+		}
+		
+	}
+	
+	async function phoneInsert() {
+		// parameter, value
+		let phone = document.getElementById("phone").value
+		
+		console.log(phone);
+		
+		let urlParams = new URLSearchParams({
+			phone
+		});
+		
+		// url
+		let url = "/users/phones";
+		
+		// post, parameter
+		let fetchOptions = {
+			method : "POST",
+			body : urlParams
+		}
+		
+		let response = await fetch(url, fetchOptions);
+		let data = await response.json();
+		
+		console.log(data);
+		
+		if( data.result == "success" ) {
+			// 주소 등록 성공일 경우
+			alert("연락처 등록 완료 되었습니다.")
+			let { userDto } = data;  // destruction (구조분해 할당)
+			
+			let phoneHtml = ``;
+			userDto.phones.forEach( phone => {
+				phoneHtml += `<tr><td>${phone.phone}</td></tr>`
+			});
+			
+			document.querySelector("#phoneTbody").innerHTML = phoneHtml;
+		} else if ( data.result == "fail" ) {
+			alert("연락처 등록 과정에서 오류가 발생하였습니다.");
+		}
+		
+	}
+	</script>
+
+</body>
+</html>
