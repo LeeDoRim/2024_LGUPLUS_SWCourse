@@ -8,3 +8,4 @@
 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;
 https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html
 - restful API 사이트 : https://restfulapi.net/
+- JWT URL : https://jwt.io/
